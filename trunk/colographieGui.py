@@ -98,14 +98,22 @@ class myFrame(wx.Frame):
  
         panel.SetSizer(vbox)
 
-        self.Bind(wx.EVT_BUTTON, self.printTxt, btnSave)
+        #self.Bind(wx.EVT_BUTTON, self.printTxt, btnShow)
+        self.Bind(wx.EVT_BUTTON, self.saveImg, btnSave)
 
         self.Centre()
         self.Show(True)
     #__init__:end        
 
-    def printTxt(self, event):
-        traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,'toto.png')
+    #def printTxt(self, event):
+    #    traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,'toto.png')
+
+    def saveImg(self, event):
+        dlg = wx.FileDialog(self, message=u"Sauvegarde", defaultDir=".",
+        wildcard="Fichiers PNG (*.png)|*.png", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+        if dlg.ShowModal() == wx.ID_OK:
+            traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,dlg.GetPath())
+        dlg.Destroy()
 
     def OnQuit(self, event):
         self.Close()
