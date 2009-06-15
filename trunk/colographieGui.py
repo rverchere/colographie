@@ -28,7 +28,9 @@ def loadConfig(filename):
 def traductColor(text,squareSize,squareNumPerLine,squareSpace,imgName):
 	# image width = borders (squareSpace) + nb squares (size and space included)
 	imageWidth = squareSpace + ((int(squareSize)+squareSpace)*squareNumPerLine)
-	imageHeight = 300
+	imageHeight = squareSpace + (len(text) / squareNumPerLine) * (squareSize + squareSpace)
+	if (len(text) % squareNumPerLine) > 0:
+		imageHeight += squareSize + squareSpace
 	squareX = squareY = squareSpace
 	im = Image.new("RGB", (imageWidth, imageHeight), 'white')
 	draw = ImageDraw.Draw(im)
@@ -148,6 +150,6 @@ class myFrame(wx.Frame):
 # main
 loadConfig('couleurs.cfg')
 app = wx.App()
-myFrame(None, -1, 'myApplication')
+myFrame(None, -1, 'Colographie')
 app.MainLoop()
 
