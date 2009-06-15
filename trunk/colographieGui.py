@@ -6,6 +6,8 @@ import wx
 # Import pour Gestion d'images
 import Image
 import ImageDraw
+# Gestion des fichiers et repertoires
+import os
 
 # Fonction de chargement du fichier de configuration
 def loadConfig(filename):
@@ -58,8 +60,10 @@ class myFrame(wx.Frame):
         file.Append(99, '&Quit', 'Quit application')
         menubar.Append(file, '&File')
  
+        self.Bind(wx.EVT_MENU, self.OnLoad, id=1)
+        self.Bind(wx.EVT_MENU, self.OnSave, id=2)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=99)
- 
+
         help = wx.Menu()
         help.Append(-1, 'About', 'About')
         menubar.Append(help, '&Help')
@@ -109,17 +113,39 @@ class myFrame(wx.Frame):
     #    traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,'toto.png')
 
     def saveImg(self, event):
-        dlg = wx.FileDialog(self, message=u"Sauvegarde", defaultDir=".",
-        wildcard="Fichiers PNG (*.png)|*.png", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+        dlg = wx.FileDialog(self, "Sauvegardez l'image", defaultDir=".",
+        wildcard="Images PNG (*.png)|*.png", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
             traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,dlg.GetPath())
+        dlg.Destroy()
+
+    def OnLoad(self, event):
+        dlg = wx.FileDialog(self, "Selectionnez un fichier", defaultDir=".",
+        wildcard="Fichiers Texte (*.txt)|*.txt", style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.filename=dlg.GetFilename()
+            self.dirname=dlg.GetDirectory()
+            filehandle=open(os.path.join(self.dirname, self.filename),'r')
+            self.text.SetValue(filehandle.read())
+            filehandle.close()
+        dlg.Destroy()
+
+    def OnSave(self, event):
+        dlg = wx.FileDialog(self, "Sauvegardez le texte", defaultDir=".",
+        wildcard="Fichiers Texte (*.txt)|*.txt", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.filename=dlg.GetFilename()
+            self.dirname=dlg.GetDirectory()
+            filehandle=open(os.path.join(self.dirname, self.filename),'w')
+            filehandle.write(self.text.GetValue())
+            filehandle.close()
         dlg.Destroy()
 
     def OnQuit(self, event):
         self.Close()
     
 
-# ici début du programme
+# main
 loadConfig('couleurs.cfg')
 app = wx.App()
 myFrame(None, -1, 'myApplication')
