@@ -22,7 +22,7 @@ def loadConfig(filename):
         val = x.split('\t')[:3]
         for i in range(len(val)):
             val[i]=int(val[i])
-    cfg[cle] = val
+        cfg[cle] = val
     fileCfg.close()
 
 #-------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ def traducColor(text,squareSize,squareNumPerLine,squareSpace,imgName):
 
     # Create Squares
     for i in range(len(text)):
-        draw.rectangle([(squareX,squareY), \
+        draw.rectangle([(squareX,squareY),  
           (squareX+squareSize,squareSize+squareY)], tuple(cfg[text.upper()[i]]))
         squareX += squareSize+squareSpace
         if squareX >= imageWidth:
@@ -88,8 +88,10 @@ class myFrame(wx.Frame):
         self.spinSize = wx.SpinCtrl(panel, -1, '30', min=1)
         self.textNb = wx.StaticText(panel, -1, 'Nombre: ')
         self.spinNb = wx.SpinCtrl(panel, -1, '15', min=1)
-        hbox1.Add(self.textSize, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL)
-        hbox1.Add(self.textNb, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL)
+        hbox1.Add(self.textSize, 0,
+                    wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL)
+        hbox1.Add(self.textNb, 0,
+                    wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL)
         hbox1.Add(self.spinSize, 1, wx.EXPAND)
         hbox1.Add(self.spinNb, 1, wx.EXPAND)
         vbox.Add(hbox1, 0, wx.EXPAND)
@@ -117,18 +119,22 @@ class myFrame(wx.Frame):
     #__init__:end        
 
     #def printTxt(self, event):
-    #    traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,'toto.png')
+    #    traducColor(self.text.GetValue(),
+    #           self.spinSize.GetValue(),self.spinNb.GetValue(),2,'toto.png')
 
     def saveImg(self, event):
         dlg = wx.FileDialog(self, "Sauvegardez l'image", defaultDir=".",
-        wildcard="Images PNG (*.png)|*.png", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+        wildcard="Images PNG (*.png)|*.png",
+                    style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
-            traductColor(self.text.GetValue(),self.spinSize.GetValue(),self.spinNb.GetValue(),2,dlg.GetPath())
+            traducColor(self.text.GetValue(),
+                self.spinSize.GetValue(),self.spinNb.GetValue(),2,dlg.GetPath())
         dlg.Destroy()
 
     def OnLoad(self, event):
         dlg = wx.FileDialog(self, "Selectionnez un fichier", defaultDir=".",
-        wildcard="Fichiers Texte (*.txt)|*.txt", style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST)
+        wildcard="Fichiers Texte (*.txt)|*.txt",
+                    style=wx.FD_OPEN|wx.FD_FILE_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename=dlg.GetFilename()
             self.dirname=dlg.GetDirectory()
@@ -139,7 +145,8 @@ class myFrame(wx.Frame):
 
     def OnSave(self, event):
         dlg = wx.FileDialog(self, "Sauvegardez le texte", defaultDir=".",
-        wildcard="Fichiers Texte (*.txt)|*.txt", style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
+        wildcard="Fichiers Texte (*.txt)|*.txt",
+                    style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename=dlg.GetFilename()
             self.dirname=dlg.GetDirectory()
