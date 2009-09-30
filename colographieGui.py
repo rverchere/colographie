@@ -52,27 +52,6 @@ def traducColor(text,squareSize,squareNumPerLine,squareSpace):
     return im
 
 #-------------------------------------------------------------------------------
-# Image Frame
-#-------------------------------------------------------------------------------
-class imgFrame(wx.Frame):
-
-    #__init__:begin
-    def __init__(self, parent, id, title):
-        wx.Frame.__init__(self, parent, id, title)
-
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        
-        self.SetSize(wx.Size(imageWidth, imageHeight))
-        self.Centre()
-        self.Show(True)        
-    #__init__:end
-    
-    def OnPaint(self, event):
-        dc = wx.PaintDC(self)
-        dc.Clear()
-
-
-#-------------------------------------------------------------------------------
 # Main Frame
 #-------------------------------------------------------------------------------
 class mainFrame(wx.Frame):
@@ -143,7 +122,7 @@ class mainFrame(wx.Frame):
     def showImg(self, event):
         img = traducColor(self.text.GetValue(),
                self.spinSize.GetValue(),self.spinNb.GetValue(),2)
-        imgFrame(self, -1, 'Resultat')
+        img.show()
 
     def saveImg(self, event):
         dlg = wx.FileDialog(self, "Sauvegardez l'image", defaultDir=".",
