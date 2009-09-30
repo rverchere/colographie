@@ -42,8 +42,13 @@ def traducColor(text,squareSize,squareNumPerLine,squareSpace):
 
     # Create Squares
     for i in range(len(text)):
-        draw.rectangle([(squareX,squareY),  
-          (squareX+squareSize,squareSize+squareY)], tuple(cfg[text.upper()[i]]))
+        try:
+            draw.rectangle([(squareX,squareY),  
+                (squareX+squareSize,squareSize+squareY)],
+                tuple(cfg[text.upper()[i]]))
+        except:
+            draw.rectangle([(squareX,squareY),  
+                (squareX+squareSize,squareSize+squareY)],'white')            
         squareX += squareSize+squareSpace
         if squareX >= imageWidth:
             squareY += squareSize+squareSpace
