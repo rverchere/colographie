@@ -9,51 +9,56 @@ import ImageDraw
 # Gestion des fichiers et repertoires
 import os
 
+#-------------------------------------------------------------------------------
 # Fonction de chargement du fichier de configuration
+#-------------------------------------------------------------------------------
 def loadConfig(filename):
-	fileCfg = open(filename, 'r')
-	global cfg
-	cfg = {} # On cree un dictionnaire vide
-	for line in fileCfg:
-		cle, x = line.split('\t', 1) # On isole la cle
-		x = x.rstrip() # On enleve les caracteres d espacement superflus a la fin
-		val = x.split('\t')[:3] # On separe les valeurs on ne garde que les 3 premieres
-		for i in range(len(val)): val[i]=int(val[i])
-		#print cle, val
-		cfg[cle] = val #On ajoute la ligne au dico
-	fileCfg.close()
+    fileCfg = open(filename, 'r')
+    global cfg
+    cfg = {}
+    for line in fileCfg:
+        cle, x = line.split('\t', 1)
+        x = x.rstrip()
+        val = x.split('\t')[:3]
+        for i in range(len(val)):
+            val[i]=int(val[i])
+    cfg[cle] = val
+    fileCfg.close()
 
-
+#-------------------------------------------------------------------------------
 # Fonction de traduction du texte en code couleur
-def traductColor(text,squareSize,squareNumPerLine,squareSpace,imgName):
-	# image width = borders (squareSpace) + nb squares (size and space included)
-	imageWidth = squareSpace + ((int(squareSize)+squareSpace)*squareNumPerLine)
-	imageHeight = squareSpace + (len(text) / squareNumPerLine) * (squareSize + squareSpace)
-	if (len(text) % squareNumPerLine) > 0:
-		imageHeight += squareSize + squareSpace
-	squareX = squareY = squareSpace
-	im = Image.new("RGB", (imageWidth, imageHeight), 'white')
-	draw = ImageDraw.Draw(im)
+#-------------------------------------------------------------------------------
+def traducColor(text,squareSize,squareNumPerLine,squareSpace,imgName):
+    # image width = borders (squareSpace) + nb squares (size and space included)
+    imageWidth = squareSpace + ((int(squareSize)+squareSpace)*squareNumPerLine)
+    imageHeight = squareSpace + (len(text) / squareNumPerLine) \
+	                * (squareSize + squareSpace)
+    if (len(text) % squareNumPerLine) > 0:
+        imageHeight += squareSize + squareSpace
+    squareX = squareY = squareSpace
+    im = Image.new("RGB", (imageWidth, imageHeight), 'white')
+    draw = ImageDraw.Draw(im)
 
-	# Create Squares
-	for i in range(len(text)):
-		draw.rectangle([(squareX,squareY), (squareX+squareSize,squareSize+squareY)], tuple(cfg[text.upper()[i]]))
-		squareX += squareSize+squareSpace
-		if squareX >= imageWidth:
-			squareY += squareSize+squareSpace
-			squareX = squareSpace
+    # Create Squares
+    for i in range(len(text)):
+        draw.rectangle([(squareX,squareY), \
+          (squareX+squareSize,squareSize+squareY)], tuple(cfg[text.upper()[i]]))
+        squareX += squareSize+squareSpace
+        if squareX >= imageWidth:
+            squareY += squareSize+squareSpace
+            squareX = squareSpace
 
-	im.save(imgName, "PNG")
+    im.save(imgName, "PNG")
 
-
-		
+#-------------------------------------------------------------------------------
 # Main Frame including all graphics
+#-------------------------------------------------------------------------------
 class myFrame(wx.Frame):
 
     #__init__:begin
     def __init__(self, parent, id, title):
         wx.Frame.__init__(self, parent, id, title)
- 
+
         #menubar:begin
         menubar = wx.MenuBar()
         file = wx.Menu()
@@ -61,7 +66,7 @@ class myFrame(wx.Frame):
         file.Append(2, '&Save File', 'Save File')
         file.Append(99, '&Quit', 'Quit application')
         menubar.Append(file, '&File')
- 
+
         self.Bind(wx.EVT_MENU, self.OnLoad, id=1)
         self.Bind(wx.EVT_MENU, self.OnSave, id=2)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=99)
@@ -69,16 +74,16 @@ class myFrame(wx.Frame):
         help = wx.Menu()
         help.Append(-1, 'About', 'About')
         menubar.Append(help, '&Help')
-    
+
         self.SetMenuBar(menubar)
         #menubar:end
- 
+
         panel = wx.Panel(self, -1)
         vbox = wx.BoxSizer(wx.VERTICAL)
         hbox1 = wx.GridSizer(2, 2) # taille / nombre
         hbox2 = wx.BoxSizer(wx.HORIZONTAL) # texte
         hbox3 = wx.BoxSizer(wx.HORIZONTAL) # afficher / sauvegarder
-        
+
         self.textSize = wx.StaticText(panel, -1, 'Taille: ')
         self.spinSize = wx.SpinCtrl(panel, -1, '30', min=1)
         self.textNb = wx.StaticText(panel, -1, 'Nombre: ')
@@ -88,20 +93,20 @@ class myFrame(wx.Frame):
         hbox1.Add(self.spinSize, 1, wx.EXPAND)
         hbox1.Add(self.spinNb, 1, wx.EXPAND)
         vbox.Add(hbox1, 0, wx.EXPAND)
- 
+
         self.text = wx.TextCtrl(panel, wx.ID_ANY, style=wx.TE_MULTILINE)
 
         hbox2.Add(self.text, 1, wx.EXPAND)
- 
+
         vbox.Add(hbox2, 1, wx.EXPAND)
 
         btnShow = wx.Button(panel, -1, 'Afficher')
         btnSave = wx.Button(panel, -1, 'Sauvegarder')
-		
+
         hbox3.Add(btnShow, 1, wx.EXPAND)
         hbox3.Add(btnSave, 1, wx.EXPAND)
         vbox.Add(hbox3, 0, wx.EXPAND)
- 
+
         panel.SetSizer(vbox)
 
         #self.Bind(wx.EVT_BUTTON, self.printTxt, btnShow)
@@ -145,9 +150,10 @@ class myFrame(wx.Frame):
 
     def OnQuit(self, event):
         self.Close()
-    
 
+#-------------------------------------------------------------------------------
 # main
+#-------------------------------------------------------------------------------
 loadConfig('couleurs.cfg')
 app = wx.App()
 myFrame(None, -1, 'Colographie')
