@@ -30,6 +30,7 @@ def loadConfig(filename):
 #-------------------------------------------------------------------------------
 def traducColor(text,squareSize,squareNumPerLine,squareSpace):
     # image width = borders (squareSpace) + nb squares (size and space included)
+    global imageWidth, imageHeight
     imageWidth = squareSpace + ((int(squareSize)+squareSpace)*squareNumPerLine)
     imageHeight = squareSpace + (len(text) / squareNumPerLine) \
 	                * (squareSize + squareSpace)
@@ -51,9 +52,30 @@ def traducColor(text,squareSize,squareNumPerLine,squareSpace):
     return im
 
 #-------------------------------------------------------------------------------
-# Main Frame including all graphics
+# Image Frame
 #-------------------------------------------------------------------------------
-class myFrame(wx.Frame):
+class imgFrame(wx.Frame):
+
+    #__init__:begin
+    def __init__(self, parent, id, title):
+        wx.Frame.__init__(self, parent, id, title)
+
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        
+        self.SetSize(wx.Size(imageWidth, imageHeight))
+        self.Centre()
+        self.Show(True)        
+    #__init__:end
+    
+    def OnPaint(self, event):
+        dc = wx.PaintDC(self)
+        dc.Clear()
+
+
+#-------------------------------------------------------------------------------
+# Main Frame
+#-------------------------------------------------------------------------------
+class mainFrame(wx.Frame):
 
     #__init__:begin
     def __init__(self, parent, id, title):
@@ -111,16 +133,17 @@ class myFrame(wx.Frame):
 
         panel.SetSizer(vbox)
 
-        #self.Bind(wx.EVT_BUTTON, self.printTxt, btnShow)
+        self.Bind(wx.EVT_BUTTON, self.showImg, btnShow)
         self.Bind(wx.EVT_BUTTON, self.saveImg, btnSave)
 
         self.Centre()
         self.Show(True)
     #__init__:end        
 
-    #def printTxt(self, event):
-    #    traducColor(self.text.GetValue(),
-    #           self.spinSize.GetValue(),self.spinNb.GetValue(),2,'toto.png')
+    def showImg(self, event):
+        img = traducColor(self.text.GetValue(),
+               self.spinSize.GetValue(),self.spinNb.GetValue(),2)
+        imgFrame(self, -1, 'Resultat')
 
     def saveImg(self, event):
         dlg = wx.FileDialog(self, "Sauvegardez l'image", defaultDir=".",
@@ -164,6 +187,6 @@ class myFrame(wx.Frame):
 #-------------------------------------------------------------------------------
 loadConfig('couleurs.cfg')
 app = wx.App()
-myFrame(None, -1, 'Colographie')
+mainFrame(None, -1, 'Colographie')
 app.MainLoop()
 
