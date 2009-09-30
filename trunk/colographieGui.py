@@ -28,7 +28,7 @@ def loadConfig(filename):
 #-------------------------------------------------------------------------------
 # Fonction de traduction du texte en code couleur
 #-------------------------------------------------------------------------------
-def traducColor(text,squareSize,squareNumPerLine,squareSpace,imgName):
+def traducColor(text,squareSize,squareNumPerLine,squareSpace):
     # image width = borders (squareSpace) + nb squares (size and space included)
     imageWidth = squareSpace + ((int(squareSize)+squareSpace)*squareNumPerLine)
     imageHeight = squareSpace + (len(text) / squareNumPerLine) \
@@ -48,7 +48,7 @@ def traducColor(text,squareSize,squareNumPerLine,squareSpace,imgName):
             squareY += squareSize+squareSpace
             squareX = squareSpace
 
-    im.save(imgName, "PNG")
+    return im
 
 #-------------------------------------------------------------------------------
 # Main Frame including all graphics
@@ -127,8 +127,9 @@ class myFrame(wx.Frame):
         wildcard="Images PNG (*.png)|*.png",
                     style=wx.FD_SAVE|wx.FD_OVERWRITE_PROMPT)
         if dlg.ShowModal() == wx.ID_OK:
-            traducColor(self.text.GetValue(),
-                self.spinSize.GetValue(),self.spinNb.GetValue(),2,dlg.GetPath())
+            img = traducColor(self.text.GetValue(),
+                self.spinSize.GetValue(),self.spinNb.GetValue(),2)
+            img.save(dlg.GetPath(), "PNG")
         dlg.Destroy()
 
     def OnLoad(self, event):
