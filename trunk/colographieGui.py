@@ -72,14 +72,14 @@ class mainFrame(wx.Frame):
         file.Append(2, '&Save File', 'Save File')
         file.Append(99, '&Quit', 'Quit application')
         menubar.Append(file, '&File')
-
         self.Bind(wx.EVT_MENU, self.OnLoad, id=1)
         self.Bind(wx.EVT_MENU, self.OnSave, id=2)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=99)
 
         help = wx.Menu()
-        help.Append(-1, 'About', 'About')
+        help.Append(10, 'About', 'About')        
         menubar.Append(help, '&Help')
+        self.Bind(wx.EVT_MENU, self.OnAbout, id=10)
 
         self.SetMenuBar(menubar)
         #menubar:end
@@ -163,6 +163,15 @@ class mainFrame(wx.Frame):
             filehandle.close()
         dlg.Destroy()
 
+    def OnAbout(self, event):
+        dlg = wx.MessageDialog(self, "Ce logiciel permet de convertir\n"
+                              "un texte en carrés de couleurs.\n"
+                              "Une idée d'Arnaud Dubois\n"
+                              "http://www.colographie.fr",
+                              "A Propos", wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        
     def OnQuit(self, event):
         self.Close()
 
